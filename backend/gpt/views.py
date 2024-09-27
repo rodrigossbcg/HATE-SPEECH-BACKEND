@@ -15,13 +15,14 @@ class GPTViews(APIView):
         
         if serializer.is_valid():
             input_text = serializer.validated_data['text']
-            output_text = self._completion(input_text)
-            response_data = {"response": output_text}
+            output_array = self._completion(input_text)
+            response_data = {"response": output_array}
             return Response(response_data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def _get_prompt(self, text):
+        text_lower = text.lower()
         prompt_template = """
             You will be asigned a task:
 
@@ -33,7 +34,7 @@ class GPTViews(APIView):
 
             Sentence: {text}
         """
-        return prompt_template.format(text=text)
+        return prompt_template.format(text=text_lower)
     
     def _completion(self, text):
 
@@ -43,9 +44,13 @@ class GPTViews(APIView):
         ]
 
         try:
-            return self.client.chat.completions.create(
+            output_text =  self.client.chat.completions.create(
                     model=self.model_name,
                     messages=conversation).choices[0].message.content
+            
+            words = output_text.split(" ")
+            return [1 if word.isupper() else 0 for word in words]
+
 
         except Exception as e:
             raise e("Error: Unable to get completion from the model.")
