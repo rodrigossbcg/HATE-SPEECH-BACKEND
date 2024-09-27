@@ -3,12 +3,18 @@ from rest_framework.response import Response
 from .serializers import InputGPTSerializer
 from rest_framework import status
 import openai
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 
 class GPTViews(APIView):
 
-    api_key = "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"
+    api_key = os.getenv("OPENAI_API_KEY")
     client = openai.Client(api_key=api_key)
-    model_name = "ft:gpt-4o-mini-2024-07-18:personal:hate-detector-7:9xdIzPpr"
+    model_name = os.getenv("OPENAI_MODEL_NAME")
 
     def post(self, request):
         serializer = InputGPTSerializer(data=request.data)
