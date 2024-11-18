@@ -12,9 +12,11 @@ load_dotenv()
 
 class GPTViews(APIView):
 
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = "sk-j0xt5F1956b63eo5aeAyIZ3Q1xneax7NP-aM-DwCIkT3BlbkFJGz3QI5lnkZCNT_oX9v4VyX4xhhE8-XvdT5Zjz90VkA"
     client = openai.Client(api_key=api_key)
-    model_name = os.getenv("OPENAI_MODEL_NAME")
+    model_name = "ft:gpt-4o-mini-2024-07-18:personal:hate-detector-7:9xdIzPpr"
+    print(model_name)
+    print(api_key)
 
     def post(self, request):
         serializer = InputGPTSerializer(data=request.data)
